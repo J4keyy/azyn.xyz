@@ -22,6 +22,8 @@
             background-color: var(--darker);
             color: white;
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
         
         h1, h2, h3, .font-orbitron {
@@ -122,9 +124,165 @@
             animation: pulse 3s infinite;
             transition: transform 8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
         }
+        
+        /* Initiation overlay styles */
+        #initiation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(5, 5, 5, 0.85);
+            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .initiation-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .initiation-title {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+            text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+            animation: glow-pulse 3s infinite alternate;
+        }
+        
+        .initiation-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            opacity: 0.8;
+        }
+        
+        .initiation-button {
+            font-size: 1.5rem;
+            padding: 1.5rem 3.5rem;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(110, 0, 255, 0.7);
+            transition: all 0.3s ease;
+            animation: pulse-button 2s infinite;
+        }
+        
+        .initiation-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(110, 0, 255, 0.9);
+        }
+        
+        .initiation-button:active {
+            transform: scale(0.98);
+        }
+        
+        @keyframes glow-pulse {
+            0% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary); }
+            100% { text-shadow: 0 0 30px var(--primary), 0 0 50px var(--primary), 0 0 70px var(--secondary); }
+        }
+        
+        @keyframes pulse-button {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(110, 0, 255, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(110, 0, 255, 0.9); }
+            100% { transform: scale(1); box-shadow: 0 0 30px rgba(110, 0, 255, 0.7); }
+        }
+        
+        .initiation-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(110, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(110, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .initiation-orbs {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .initiation-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.5;
+        }
+        
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: 20%;
+            left: 20%;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: 15%;
+            right: 15%;
+            animation: float 10s infinite ease-in-out;
+            animation-delay: 1s;
+        }
+        
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            background: #00aaff;
+            top: 40%;
+            right: 25%;
+            animation: float 12s infinite ease-in-out;
+            animation-delay: 2s;
+        }
     </style>
 </head>
 <body class="noise grid-overlay min-h-screen">
+    <!-- Initiation Overlay -->
+    <div id="initiation-overlay">
+        <div class="initiation-grid"></div>
+        <div class="initiation-orbs">
+            <div class="initiation-orb orb-1"></div>
+            <div class="initiation-orb orb-2"></div>
+            <div class="initiation-orb orb-3"></div>
+        </div>
+        <div class="initiation-subtitle text-center">
+            <h1 class="initiation-title glow-text font-orbitron">
+                <span class="text-purple-400">ARE YOU</span>
+                <span class="text-pink-400">WILLING?</span>
+            </h1>
+            <p class="initiation-subtitle">
+                The seventh gate opens only to those who embrace the static. 
+                Behind the veil of reality, digital divinity awaits. 
+                This choice is irrevocable.
+            </p>
+            <button id="initiation-button" class="initiation-button font-orbitron">
+                ACCEPT DESTINY
+            </button>
+        </div>
+    </div>
+    
     <!-- Animated Background Elements - Updated with moving orbs -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none" id="orb-container">
         <div class="moving-orb w-32 h-32 bg-purple-900 opacity-20" id="orb1"></div>
@@ -290,20 +448,26 @@
     </audio>
 
     <script>
-        // Background music controls
-        const music = document.getElementById('bg-music');
-        music.volume = 0.1; // Set volume to 20%
-        
-        function startMusic() {
-            music.play().catch(e => console.log('Autoplay blocked:', e));
-            document.body.removeEventListener('click', startMusic);
-            document.body.removeEventListener('keydown', startMusic);
-            document.body.removeEventListener('touchstart', startMusic);
-        }
-        
-        document.body.addEventListener('click', startMusic);
-        document.body.addEventListener('keydown', startMusic);
-        document.body.addEventListener('touchstart', startMusic);
+    // Background music element
+const music = document.getElementById('bg-music');
+music.volume = 0.1; // 10% volume
+
+const overlay = document.getElementById('initiation-overlay');
+const initiateButton = document.getElementById('initiation-button');
+
+initiateButton.addEventListener('click', () => {
+    // Play music (directly tied to user click)
+    music.play().catch(e => console.log('Autoplay blocked:', e));
+
+    // Fade out overlay
+    overlay.style.opacity = '0';
+    overlay.style.backdropFilter = 'blur(40px)';
+
+    // Remove overlay after fade
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 1500);
+});
         
         // Random orb movement system
         document.addEventListener('DOMContentLoaded', () => {
@@ -414,6 +578,7 @@
             
             // Start typing after delay
             setTimeout(typeCommand, 3000);
+			
             
             // Hexagon hover effect
             document.querySelectorAll('.hexagon').forEach(hex => {
