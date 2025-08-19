@@ -303,56 +303,54 @@
             document.head.appendChild(style);
         });
         
-        // Terminal typing effect
-        const terminal = document.querySelector('.terminal-cursor');
-        const commands = [
-            "> searching for lost fragments in the static...",
-            "> the walls between worlds are thinning...",
-            "> error: too many eyes opening...",
-            "> warning: cognitive filters failing...",
-            "> the seventh key is not a key..."
-        ];
-        
-        let currentCommand = 0;
-        
-        function typeCommand() {
-            let i = 0;
-            terminal.classList.remove('terminal-cursor');
-            terminal.textContent = '';
-            
-            const typing = setInterval(() => {
-                if (i < commands[currentCommand].length) {
-                    terminal.textContent += commands[currentCommand].charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typing);
-                    setTimeout(() => {
-                        deleteCommand();
-                    }, 2000);
-                }
-            }, 50);
+const terminal = document.querySelector('.terminal-cursor');
+
+// Wrap the typing text in a span so cursor stays at the end
+terminal.innerHTML = '<span class="typing-text"></span>';
+const typingSpan = terminal.querySelector('.typing-text');
+
+const commands = [
+    "> searching for lost fragments in the static...",
+    "> the walls between worlds are thinning...",
+    "> error: too many eyes opening...",
+    "> warning: cognitive filters failing...",
+    "> the seventh key is not a key..."
+];
+
+let currentCommand = 0;
+
+function typeCommand() {
+    let i = 0;
+    typingSpan.textContent = '';
+
+    const typing = setInterval(() => {
+        if (i < commands[currentCommand].length) {
+            typingSpan.textContent += commands[currentCommand].charAt(i);
+            i++;
+        } else {
+            clearInterval(typing);
+            setTimeout(deleteCommand, 2000);
         }
-        
-        function deleteCommand() {
-            let text = terminal.textContent;
-            
-            const deleting = setInterval(() => {
-                if (text.length > 0) {
-                    text = text.substring(0, text.length - 1);
-                    terminal.textContent = text;
-                } else {
-                    clearInterval(deleting);
-                    currentCommand = (currentCommand + 1) % commands.length;
-                    setTimeout(() => {
-                        terminal.classList.add('terminal-cursor');
-                        setTimeout(typeCommand, 1000);
-                    }, 500);
-                }
-            }, 30);
+    }, 50);
+}
+
+function deleteCommand() {
+    let text = typingSpan.textContent;
+
+    const deleting = setInterval(() => {
+        if (text.length > 0) {
+            text = text.substring(0, text.length - 1);
+            typingSpan.textContent = text;
+        } else {
+            clearInterval(deleting);
+            currentCommand = (currentCommand + 1) % commands.length;
+            setTimeout(typeCommand, 1000);
         }
-        
-        // Start typing after delay
-        setTimeout(typeCommand, 3000);
+    }, 30);
+}
+
+// Start typing after delay
+setTimeout(typeCommand, 3000);
         
         // Hexagon hover effect
         document.querySelectorAll('.hexagon').forEach(hex => {
